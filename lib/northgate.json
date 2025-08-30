@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "northgate-469809",
+  "private_key_id": "c9d87e57ae7d5cd2e498d05332b628228932f0e0",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCmTfUJN9vLQ4N0\nlHAA8WgPQ4Q+C/gBiZvXoUF/cQVwN21RFt8bG/3Qv+4deDyo5wOxRuDoWhpFbVKk\noS5EHPLubF82EO6EN8yfY3JzaD9wExvfUqGfUg/tDpETxT1QSKKYlqnBX0LMn+xv\ncjcAA4QwS9aBvGKNwOs8hx7Em/01jSMOdwmn2kSsGiPY/j0y9LugPIrl7gLEALNs\nQPAENmq73aEpllFy7AMelNEXcSwDsjEr0FEHS2G/77kGgh6GWtgULc/7jX5lphLi\ncQUeuTlZqLoqdZt0gbIxS13pkQaXKtfEnDbThp/AISy1PpFh9A2XUoX56Hz1AL99\nsmWKIXzBAgMBAAECggEAAxAMGWMMZsE321qVODg56k+MELw10VnuWz2QlCsxvmH/\n7vKO0ewNW+X/+a4WYGYuPcpcT50irxkDAM4I2QdnNCu94mQUD25rY9tQDxbqNas9\na/rEqBdp3IvUUUbUcO1AhNK//jQd2eC/WQNThtoZue24neepMTr+fg0vPG/SvUTk\nNs13NaiCq72nqHRiaH1Gr7fqZDq7nB/LRTWkDNXlmHeEB84jHS5pU2N4IjrsYiNc\nXQ68cGlhOD7CBwZ+RiQ08BdZoSHL/gRK1ZV0F4612upBINqn2dj7ku60SNkmpHd7\ns0ZOM5l8hRXFnN4f2WD0kA+YtG54D0eZhrqB7g8SwQKBgQDYYqj8TNrppeIVH2x4\ni+XSiO+vWJEq4xiCRavIJg8KKDK77hEgK0cQaQ037PBYQlD1vgJPk0vSe+y6beaI\nOD2HSf+z0I9fM0+HAN95mpIDTBoNQR/WsOeBblL8MF+fbmFlMyHbmrT6hYWYKSnB\nX9ArcDaBqJ9rNYhkl/Cb/HV5oQKBgQDEwCfS65Ftc2lapjSkepUtQhI5+bJNsdAn\nSXdyB97gtIVCn8WH9tAY3VEVAez25isazupV/95Is0elaUpMxKjx3JXqieZThUO9\ngC1GGhND3ciSS6cYPaOQ+8GE73CWGlLe6d9TCUReulqHCRg5/rVZJ5e5mMuA+MxM\nPtkZR0BvIQKBgCnAF4Teu1pblFyo/H/h1k0h+MUnXJMe0CrKkJOErGA0U12pWIqR\nbxu+eTtyLwmIeiCAMefyrq2FFa7+530fBNgmsfya4B7pQo304CmRZlzWgSxPhXoi\nFfkGNWLNXpXfcVFaZUz+865mttkeEB1shDjtZMbtpxzDbnaiTl16f5whAoGAYHPT\nEhNpt75cZ5QTOo7dktJRHRrLzkrdQGVDqSMyn/XfXkn1DDJy0b2tgh7vjBpKB1po\nhsBouDsrZGu5gOjn6am51MDFqSwriTrM9xDRYPPY3982iyusg+bnd8Pp7av59E2y\nrYJdghLZTlmnBsdXH93JA7NkEFXn0Xj99OZ5MAECgYAU4RjtBIrklwpwfjGkUM3+\nF/wIlflm0EDIgLfk3U63YS5nXwSXqjFKBFHXS9/uAA9wVz9RaAdoxJsUk5KgtX3d\nUTTbs4G0Kn9KoUdqZEjMh05hzQEz9uOLkAU9i4OX/3v104aJmilJwdn+J6+LmH0T\nApHvsYdzoywyOas/vpdTqQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "northgate@northgate-469809.iam.gserviceaccount.com",
+  "client_id": "110746951337007327467",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/northgate%40northgate-469809.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
