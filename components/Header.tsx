@@ -59,6 +59,11 @@ const Header = () => {
     { name: '📞 Contact', href: '/contact' },
   ]
 
+  const handleLinkClick = () => {
+    setIsMenuOpen(false)
+    setActiveDropdown(null)
+  }
+
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
@@ -69,7 +74,7 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-[68px]">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2" onClick={handleLinkClick}>
             <div
               className={`w-10 h-10 flex items-center justify-center rounded-lg shadow-md transition-all ${isScrolled ? 'bg-gradient-to-r from-blue-600 to-purple-600' : 'bg-white'
                 }`}
@@ -155,7 +160,7 @@ const Header = () => {
             >
               <Search className="w-5 h-5" />
             </button>
-            <Link href="/login">
+            <Link href="/login" onClick={handleLinkClick}>
               <button
                 className={`px-3 py-2 rounded-md text-sm font-medium flex items-center space-x-1 transition ${isScrolled
                     ? 'text-gray-700 bg-blue-50 hover:bg-blue-100 border border-blue-100'
@@ -187,37 +192,45 @@ const Header = () => {
           <div className="lg:hidden mt-2 rounded-lg bg-white shadow-md border border-gray-100">
             {menuItems.map((item) => (
               <div key={item.name}>
-                <button
-                  onClick={() =>
-                    item.dropdown
-                      ? setActiveDropdown(
-                        activeDropdown === item.name ? null : item.name
-                      )
-                      : setIsMenuOpen(false)
-                  }
-                  className="flex justify-between items-center w-full px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 text-sm font-medium"
-                >
-                  <span>{item.name}</span>
-                  {item.dropdown && (
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform ${activeDropdown === item.name ? 'rotate-180' : ''
-                        }`}
-                    />
-                  )}
-                </button>
-                {item.dropdown && activeDropdown === item.name && (
-                  <div className="pl-6 pb-2">
-                    {item.dropdown.map((sub) => (
-                      <Link
-                        key={sub.name}
-                        href={sub.href}
-                        className="block px-2 py-1 text-sm text-gray-600 hover:text-blue-600"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
-                  </div>
+                {item.dropdown ? (
+                  <>
+                    <button
+                      onClick={() =>
+                        setActiveDropdown(
+                          activeDropdown === item.name ? null : item.name
+                        )
+                      }
+                      className="flex justify-between items-center w-full px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 text-sm font-medium"
+                    >
+                      <span>{item.name}</span>
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform ${activeDropdown === item.name ? 'rotate-180' : ''
+                          }`}
+                      />
+                    </button>
+                    {activeDropdown === item.name && (
+                      <div className="pl-6 pb-2 bg-gray-50">
+                        {item.dropdown.map((sub) => (
+                          <Link
+                            key={sub.name}
+                            href={sub.href}
+                            className="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600"
+                            onClick={handleLinkClick}
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    href={item.href!}
+                    className="block px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 text-sm font-medium"
+                    onClick={handleLinkClick}
+                  >
+                    {item.name}
+                  </Link>
                 )}
               </div>
             ))}
