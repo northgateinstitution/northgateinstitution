@@ -1,7 +1,5 @@
 "use client"
 import Layout from '@/components/Layout'
-import { User, Quote, Sparkles } from 'lucide-react'
-import { motion } from 'framer-motion'
 
 export default function DirectorsMessage() {
     return (

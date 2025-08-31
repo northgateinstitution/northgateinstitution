@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Notice } from '@/types'
 
 interface FileUploadResponse {
@@ -23,11 +23,7 @@ export default function AdminNotices() {
   const [messageType, setMessageType] = useState<'success' | 'error'>('success')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  useEffect(() => {
-    fetchNotices()
-  }, [])
-
-  const fetchNotices = async () => {
+  const fetchNotices = useCallback(async () => {
     try {
       const response = await fetch('/api/notices', {
         method: 'GET',
@@ -41,7 +37,11 @@ export default function AdminNotices() {
       console.error(e)
       showMessage('Failed to load notices', 'error')
     }
-  }
+  }, [])
+
+  useEffect(() => {
+    fetchNotices()
+  }, [fetchNotices])
 
   const showMessage = (text: string, type: 'success' | 'error' = 'success') => {
     setMessage(text)
@@ -218,9 +218,10 @@ export default function AdminNotices() {
       if (fileInput) fileInput.value = ''
 
       await fetchNotices()
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error)
-      showMessage(`Error: ${error.message}`, 'error')
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
+      showMessage(`Error: ${errorMessage}`, 'error')
     } finally {
       setIsUploading(false)
     }
@@ -238,9 +239,10 @@ export default function AdminNotices() {
       // Optimistic update
       setNotices((prev) => prev.filter((n) => n.id !== id))
       showMessage('Notice deleted', 'success')
-    } catch (e: any) {
-      console.error(e)
-      showMessage(`Delete failed: ${e.message}`, 'error')
+    } catch (error: unknown) {
+      console.error(error)
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
+      showMessage(`Delete failed: ${errorMessage}`, 'error')
       // Fallback: hard refresh list
       fetchNotices()
     }

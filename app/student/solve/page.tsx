@@ -316,108 +316,116 @@ export default function SolveQuestions() {
                   </div>
                 ) : (
                   <div className="space-y-10">
-                    {Array.from(new Set(categories.map(c => c.type))).map((type, typeIndex) => (
-                      <div key={type} className="relative">
-                        {/* Category Type Header */}
-                        <div className="flex items-center mb-6">
-                          <div className={`p-3 rounded-full mr-4 ${
-                            type === 'subject' ? 'bg-blue-100' :
-                            type === 'competitive' ? 'bg-purple-100' : 'bg-green-100'
-                          }`}>
-                            <span className="text-2xl">
-                              {type === 'subject' && '📚'}
-                              {type === 'competitive' && '🏆'}
-                              {type !== 'subject' && type !== 'competitive' && '🔹'}
-                            </span>
+                    {Array.from(new Set(categories.map(c => c.type))).map((type, typeIndex) => {
+                      // Fix the type error by ensuring type is treated as a string
+                      const typeString = type as string;
+                      
+                      return (
+                        <div key={typeString} className="relative">
+                          {/* Category Type Header */}
+                          <div className="flex items-center mb-6">
+                            <div className={`p-3 rounded-full mr-4 ${
+                              typeString === 'subject' ? 'bg-blue-100' :
+                              typeString === 'competitive' ? 'bg-purple-100' : 'bg-green-100'
+                            }`}>
+                              <span className="text-2xl">
+                                {typeString === 'subject' && '📚'}
+                                {typeString === 'competitive' && '🏆'}
+                                {typeString !== 'subject' && typeString !== 'competitive' && '🔹'}
+                              </span>
+                            </div>
+                            <div>
+                              <h4 className="text-2xl font-bold text-gray-800">
+                                {typeString === 'subject' && 'Academic Subjects'}
+                                {typeString === 'competitive' && 'Competitive Exams'}
+                                {typeString !== 'subject' && typeString !== 'competitive' && `${typeString.charAt(0).toUpperCase()}${typeString.slice(1)} Category`}
+                              </h4>
+                              <p className="text-base text-gray-600">
+                                {typeString === 'subject' && 'Core academic subjects for comprehensive learning'}
+                                {typeString === 'competitive' && 'Preparation for competitive examinations'}
+                                {typeString !== 'subject' && typeString !== 'competitive' && `Specialized ${typeString} topics and assessments`}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <h4 className="text-2xl font-bold text-gray-800">
-                              {type === 'subject' && 'Academic Subjects'}
-                              {type === 'competitive' && 'Competitive Exams'}
-                              {type !== 'subject' && type !== 'competitive' && `${type.charAt(0).toUpperCase()}${type.slice(1)} Category`}
-                            </h4>
-                            <p className="text-base text-gray-600">
-                              {type === 'subject' && 'Core academic subjects for comprehensive learning'}
-                              {type === 'competitive' && 'Preparation for competitive examinations'}
-                              {type !== 'subject' && type !== 'competitive' && `Specialized ${type} topics and assessments`}
-                            </p>
-                          </div>
-                        </div>
 
-                        {/* Category Cards Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                          {categories.filter(c => c.type === type).map((category, index) => (
-                            <div
-                              key={category.id}
-                              className="group relative"
-                              style={{ animationDelay: `${index * 0.1}s` }}
-                            >
-                              <button
-                                onClick={() => setSelectedCategory(category.id)}
-                                className={`w-full p-6 border-2 rounded-2xl text-left transition-all duration-300 hover:scale-105 hover:shadow-xl ${
-                                  selectedCategory === category.id
-                                    ? 'border-indigo-500 bg-gradient-to-br from-indigo-50 to-purple-50 shadow-lg transform scale-105'
-                                    : 'border-gray-200 bg-white hover:border-indigo-300 hover:bg-gradient-to-br hover:from-indigo-50 hover:to-purple-50'
-                                }`}
+                          {/* Category Cards Grid */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            {categories.filter(c => c.type === typeString).map((category, index) => (
+                              <div
+                                key={category.id}
+                                className="group relative"
+                                style={{ animationDelay: `${index * 0.1}s` }}
                               >
-                                {/* Selection Indicator */}
-                                {selectedCategory === category.id && (
-                                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
-                                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                  </div>
-                                )}
+                                <button
+                                  onClick={() => setSelectedCategory(category.id)}
+                                  className={`w-full p-6 border-2 rounded-2xl text-left transition-all duration-300 hover:scale-105 hover:shadow-xl ${
+                                    selectedCategory === category.id
+                                      ? 'border-indigo-500 bg-gradient-to-br from-indigo-50 to-purple-50 shadow-lg transform scale-105'
+                                      : 'border-gray-200 bg-white hover:border-indigo-300 hover:bg-gradient-to-br hover:from-indigo-50 hover:to-purple-50'
+                                  }`}
+                                >
+                                  {/* Selection Indicator */}
+                                  {selectedCategory === category.id && (
+                                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
+                                      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                      </svg>
+                                    </div>
+                                  )}
 
-                                {/* Category Icon */}
-                                <div className={`w-12 h-12 rounded-xl mb-4 flex items-center justify-center ${
-                                  selectedCategory === category.id 
-                                    ? 'bg-gradient-to-r from-indigo-500 to-purple-500' 
-                                    : 'bg-gray-100 group-hover:bg-gradient-to-r group-hover:from-indigo-500 group-hover:to-purple-500'
-                                }`}>
-                                  <span className={`text-xl ${
+                                  {/* Category Icon */}
+                                  <div className={`w-12 h-12 rounded-xl mb-4 flex items-center justify-center ${
                                     selectedCategory === category.id 
-                                      ? 'text-white' 
-                                      : 'text-gray-600 group-hover:text-white'
+                                      ? 'bg-gradient-to-r from-indigo-500 to-purple-500' 
+                                      : 'bg-gray-100 group-hover:bg-gradient-to-r group-hover:from-indigo-500 group-hover:to-purple-500'
                                   }`}>
-                                    {getSubjectIcon(category.name)}
-                                  </span>
-                                </div>
+                                    <span className={`text-xl ${
+                                      selectedCategory === category.id 
+                                        ? 'text-white' 
+                                        : 'text-gray-600 group-hover:text-white'
+                                    }`}>
+                                      {getSubjectIcon(category.name)}
+                                    </span>
+                                  </div>
 
-                                {/* Category Name */}
-                                <h5 className={`text-lg font-bold mb-2 ${
-                                  selectedCategory === category.id 
-                                    ? 'text-indigo-700' 
-                                    : 'text-gray-800 group-hover:text-indigo-700'
-                                }`}>
-                                  {category.name}
-                                </h5>
+                                  {/* Category Name */}
+                                  <h5 className={`text-lg font-bold mb-2 ${
+                                    selectedCategory === category.id 
+                                      ? 'text-indigo-700' 
+                                      : 'text-gray-800 group-hover:text-indigo-700'
+                                  }`}>
+                                    {category.name}
+                                  </h5>
 
+                                  {/* Category Description */}
+                                  <p className="text-sm text-gray-600">
+                                    {getSubjectDescription(category.name, typeString)}
+                                  </p>
 
-
-                                {/* Hover Effect Border */}
-                                <div className={`absolute inset-0 rounded-2xl transition-opacity ${
-                                  selectedCategory === category.id 
-                                    ? 'bg-gradient-to-r from-indigo-500/10 to-purple-500/10' 
-                                    : 'bg-gradient-to-r from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/5 group-hover:to-purple-500/5'
-                                }`}></div>
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Separator Line */}
-                        {typeIndex < Array.from(new Set(categories.map(c => c.type))).length - 1 && (
-                          <div className="mt-10 flex items-center">
-                            <div className="flex-1 border-t border-gray-200"></div>
-                            <div className="px-4 text-sm text-gray-500 bg-gray-50 rounded-full py-1">
-                              More Categories
-                            </div>
-                            <div className="flex-1 border-t border-gray-200"></div>
+                                  {/* Hover Effect Border */}
+                                  <div className={`absolute inset-0 rounded-2xl transition-opacity ${
+                                    selectedCategory === category.id 
+                                      ? 'bg-gradient-to-r from-indigo-500/10 to-purple-500/10' 
+                                      : 'bg-gradient-to-r from-indigo-500/0 to-purple-500/0 group-hover:from-indigo-500/5 group-hover:to-purple-500/5'
+                                  }`}></div>
+                                </button>
+                              </div>
+                            ))}
                           </div>
-                        )}
-                      </div>
-                    ))}
+
+                          {/* Separator Line */}
+                          {typeIndex < Array.from(new Set(categories.map(c => c.type))).length - 1 && (
+                            <div className="mt-10 flex items-center">
+                              <div className="flex-1 border-t border-gray-200"></div>
+                              <div className="px-4 text-sm text-gray-500 bg-gray-50 rounded-full py-1">
+                                More Categories
+                              </div>
+                              <div className="flex-1 border-t border-gray-200"></div>
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
                   </div>
                 )}
               </div>

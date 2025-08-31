@@ -31,7 +31,7 @@ export default function Navbar({ userRole, userName }: NavbarProps) {
       await supabase.auth.signOut()
       router.push('/login')
       toast.success('Logged out successfully')
-    } catch (error) {
+    } catch {
       toast.error('Error logging out')
     }
   }

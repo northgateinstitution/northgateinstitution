@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { QuizAttempt, Category, Question } from '@/types'
+import { useState, useEffect, useCallback } from 'react'
+import { QuizAttempt, Question } from '@/types'
 import { 
   Trophy, 
   Clock, 
@@ -38,11 +38,7 @@ export default function QuizResult({ attemptId, questions, selectedAnswers, onRe
   const [showDetailedReview, setShowDetailedReview] = useState(false)
   const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchResults()
-  }, [])
-
-  const fetchResults = async () => {
+  const fetchResults = useCallback(async () => {
     try {
       // Fetch attempt details
       const response = await fetch(`/api/quiz-attempts?attemptId=${attemptId}`)
@@ -78,7 +74,11 @@ export default function QuizResult({ attemptId, questions, selectedAnswers, onRe
     } finally {
       setLoading(false)
     }
-  }
+  }, [attemptId])
+
+  useEffect(() => {
+    fetchResults()
+  }, [fetchResults])
 
   const formatTime = (seconds: number) => {
     const hrs = Math.floor(seconds / 3600)
@@ -116,14 +116,16 @@ export default function QuizResult({ attemptId, questions, selectedAnswers, onRe
   }
 
   const shareResults = async () => {
-    if (navigator.share && attempt) {
+    if (!attempt) return; // Early return if attempt is null
+    
+    if (navigator.share) {
       try {
         await navigator.share({
           title: 'My Quiz Results',
           text: `I just scored ${Math.round(attempt.score)}% in ${attempt.categories?.name} quiz! 🎯`,
           url: window.location.href,
         })
-      } catch (error) {
+      } catch {
         // Fallback to clipboard
         navigator.clipboard.writeText(
           `I just scored ${Math.round(attempt.score)}% in ${attempt.categories?.name} quiz! Check out the quiz platform: ${window.location.origin}`

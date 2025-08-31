@@ -13,53 +13,103 @@ interface AddQuestionModalProps {
   onSuccess: () => void
 }
 
+type QuestionType = 'text' | 'mathematical'
+type Difficulty = 'easy' | 'medium' | 'hard'
+type CorrectAnswer = 'A' | 'B' | 'C' | 'D'
+
 export function AddQuestionModal({ categories, question, onClose, onSuccess }: AddQuestionModalProps) {
   const [formData, setFormData] = useState({
     question: '',
     category_id: '',
-    question_type: 'text' as 'text' | 'mathematical',
+    question_type: 'text' as QuestionType,
     option_a: '',
     option_b: '',
     option_c: '',
     option_d: '',
-    correct_answer: 'A' as 'A' | 'B' | 'C' | 'D',
+    correct_answer: 'A' as CorrectAnswer,
     explanation: '',
-    difficulty: 'medium' as 'easy' | 'medium' | 'hard'
+    difficulty: 'medium' as Difficulty
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     if (question) {
       setFormData({
         question: question.question,
         category_id: String(question.category_id),
-        question_type: question.question_type as 'text' | 'mathematical',
+        question_type: question.question_type as QuestionType,
         option_a: question.option_a || '',
         option_b: question.option_b || '',
         option_c: question.option_c || '',
         option_d: question.option_d || '',
-        correct_answer: question.correct_answer as 'A' | 'B' | 'C' | 'D',
+        correct_answer: question.correct_answer as CorrectAnswer,
         explanation: question.explanation || '',
-        difficulty: question.difficulty as 'easy' | 'medium' | 'hard'
+        difficulty: question.difficulty as Difficulty
       })
     }
   }, [question])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validation
+    if (!formData.category_id) {
+      toast.error('Please select a category')
+      return
+    }
+    if (!formData.question.trim()) {
+      toast.error('Please enter a question')
+      return
+    }
+    if (!formData.option_a.trim() || !formData.option_b.trim() || 
+        !formData.option_c.trim() || !formData.option_d.trim()) {
+      toast.error('Please fill in all options')
+      return
+    }
+
+    setIsSubmitting(true)
+    
     try {
       if (question) {
-        const { error } = await supabase.from('questions').update(formData).eq('id', question.id)
+        const { error } = await supabase
+          .from('questions')
+          .update(formData)
+          .eq('id', question.id)
         if (error) throw error
         toast.success('Question updated successfully!')
       } else {
-        const { error } = await supabase.from('questions').insert([formData])
+        const { error } = await supabase
+          .from('questions')
+          .insert([formData])
         if (error) throw error
         toast.success('Question added successfully!')
       }
       onSuccess()
-    } catch (error: any) {
-      toast.error(error.message || 'An error occurred')
+      onClose()
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || 'An error occurred')
+      } else {
+        toast.error('An unexpected error occurred')
+      }
+    } finally {
+      setIsSubmitting(false)
     }
+  }
+
+  const handleQuestionTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value as QuestionType
+    setFormData(prev => ({ ...prev, question_type: value }))
+  }
+
+  const handleCorrectAnswerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value as CorrectAnswer
+    setFormData(prev => ({ ...prev, correct_answer: value }))
+  }
+
+  const handleDifficultyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value as Difficulty
+    setFormData(prev => ({ ...prev, difficulty: value }))
   }
 
   return (
@@ -69,7 +119,11 @@ export function AddQuestionModal({ categories, question, onClose, onSuccess }: A
           <h3 className="text-xl font-semibold text-gray-800">
             {question ? 'Edit Question' : 'Add New Question'}
           </h3>
-          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
+          <button 
+            onClick={onClose} 
+            className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+            disabled={isSubmitting}
+          >
             <X className="h-5 w-5 text-gray-500" />
           </button>
         </div>
@@ -84,6 +138,7 @@ export function AddQuestionModal({ categories, question, onClose, onSuccess }: A
                 value={formData.category_id}
                 onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                disabled={isSubmitting}
               >
                 <option value="">Select Category</option>
                 {categories.map((category) => (
@@ -98,8 +153,9 @@ export function AddQuestionModal({ categories, question, onClose, onSuccess }: A
               <label className="block text-sm font-medium text-gray-700 mb-1">Question Type</label>
               <select
                 value={formData.question_type}
-                onChange={(e) => setFormData({ ...formData, question_type: e.target.value as any })}
+                onChange={handleQuestionTypeChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                disabled={isSubmitting}
               >
                 <option value="text">Textual</option>
                 <option value="mathematical">Mathematical</option>
@@ -117,6 +173,7 @@ export function AddQuestionModal({ categories, question, onClose, onSuccess }: A
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
               rows={3}
               placeholder="Enter your question here..."
+              disabled={isSubmitting}
             />
           </div>
 
@@ -134,6 +191,7 @@ export function AddQuestionModal({ categories, question, onClose, onSuccess }: A
                   onChange={(e) => setFormData({ ...formData, [opt]: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
                   placeholder={`Enter option ${String.fromCharCode(65 + idx)}`}
+                  disabled={isSubmitting}
                 />
               </div>
             ))}
@@ -145,8 +203,9 @@ export function AddQuestionModal({ categories, question, onClose, onSuccess }: A
               <label className="block text-sm font-medium text-gray-700 mb-1">Correct Answer *</label>
               <select
                 value={formData.correct_answer}
-                onChange={(e) => setFormData({ ...formData, correct_answer: e.target.value as any })}
+                onChange={handleCorrectAnswerChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                disabled={isSubmitting}
               >
                 <option value="A">Option A</option>
                 <option value="B">Option B</option>
@@ -159,8 +218,9 @@ export function AddQuestionModal({ categories, question, onClose, onSuccess }: A
               <label className="block text-sm font-medium text-gray-700 mb-1">Difficulty</label>
               <select
                 value={formData.difficulty}
-                onChange={(e) => setFormData({ ...formData, difficulty: e.target.value as any })}
+                onChange={handleDifficultyChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                disabled={isSubmitting}
               >
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
@@ -178,6 +238,7 @@ export function AddQuestionModal({ categories, question, onClose, onSuccess }: A
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
               rows={2}
               placeholder="Explain why this answer is correct..."
+              disabled={isSubmitting}
             />
           </div>
 
@@ -186,15 +247,17 @@ export function AddQuestionModal({ categories, question, onClose, onSuccess }: A
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors disabled:opacity-50"
+              disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium transition-colors"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
             >
-              {question ? 'Update Question' : 'Add Question'}
+              {isSubmitting ? 'Processing...' : (question ? 'Update Question' : 'Add Question')}
             </button>
           </div>
         </form>

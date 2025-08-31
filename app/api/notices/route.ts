@@ -138,7 +138,7 @@ export async function PUT(request: NextRequest) {
       updated_at: new Date().toISOString(),
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin // Changed from supabase to supabaseAdmin
       .from('notices')
       .update(updateData)
       .eq('id', id)

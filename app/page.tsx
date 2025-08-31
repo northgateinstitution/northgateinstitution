@@ -3,21 +3,19 @@ import { useState, useEffect } from 'react'
 import Layout from '@/components/Layout'
 import Link from 'next/link'
 import Image from 'next/image'
-import { BookOpen, Users, Trophy, Calendar, Star, ArrowRight, Play, Award, Globe, Heart, X } from 'lucide-react'
+import { BookOpen, Users, Trophy, Calendar, Star, ArrowRight, Globe, X } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, EffectFade, Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/effect-fade'
 import 'swiper/css/pagination'
-import { motion } from 'framer-motion'
 import { Notice } from '@/types'
-
 
 // HomeNoticesQuizSection Component
 const HomeNoticesQuizSection = () => {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expandedNotices, setExpandedNotices] = useState<Set<number>>(new Set());
+  const [expandedNotices, setExpandedNotices] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const fetchNotices = async () => {
@@ -49,7 +47,7 @@ const HomeNoticesQuizSection = () => {
     fetchNotices();
   }, []);
 
-  const toggleExpand = (id: number) => {
+  const toggleExpand = (id: string) => {
     const newExpanded = new Set(expandedNotices);
     if (newExpanded.has(id)) {
       newExpanded.delete(id);
@@ -102,7 +100,7 @@ const HomeNoticesQuizSection = () => {
       <div className="relative z-10 w-full px-4">
         <div className="grid lg:grid-cols-2 gap-8">
           
-          {/* Left Side - Notices Box - UPDATED */}
+          {/* Left Side - Notices Box */}
           <div className="animate-slide-in">
             <div className="bg-white/80 backdrop-blur-md rounded-5xl shadow-xl border border-white/50 overflow-hidden transform hover:scale-[1.02] transition-all duration-500">
               {/* Notices Header */}
@@ -129,7 +127,7 @@ const HomeNoticesQuizSection = () => {
                 </div>
               </div>
 
-              {/* Notices Content - UPDATED */}
+              {/* Notices Content */}
               <div className="p-6">
                 {loading ? (
                   <div className="flex justify-center items-center py-8">
@@ -243,7 +241,7 @@ const HomeNoticesQuizSection = () => {
             </div>
           </div>
 
-          {/* Right Side - Quiz Section (unchanged) */}
+          {/* Right Side - Quiz Section */}
           <div className="animate-slide-in" style={{animationDelay: '0.2s'}}>
             <div className="bg-white/80 backdrop-blur-md rounded-5xl shadow-xl border border-white/50 overflow-hidden transform hover:scale-[1.02] transition-all duration-500">
               {/* Quiz Header */}
@@ -386,18 +384,13 @@ const HomeNoticesQuizSection = () => {
   );
 };
 
-
-
 export default function Home() {
   const [isVisible, setIsVisible] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [activeFeature, setActiveFeature] = useState(0)
   const [showWelcomePopup, setShowWelcomePopup] = useState(true)
-  const [notices, setNotices] = useState<Notice[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     setIsVisible(true)
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -407,14 +400,9 @@ export default function Home() {
       })
     }
 
-
-
-
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
-  },
-
-    [])
+  }, [])
 
   const features = [
     {
@@ -447,7 +435,7 @@ export default function Home() {
     }
   ]
 
-  // Carousel images - using placeholder images from a reliable source
+  // Carousel images
   const carouselImages = [
     {
       src: "/1.jpg",
@@ -633,7 +621,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Notices & Quiz Section - Added Here */}
+      {/* Notices & Quiz Section */}
       <HomeNoticesQuizSection />
 
       {/* About Section */}
@@ -721,10 +709,10 @@ export default function Home() {
                 </div>
 
                 <p className="text-gray-600 leading-relaxed text-lg mb-6">
-                  At Northgate Institution, we don't just teach—we inspire.
+                  At Northgate Institution, we don&apos;t just teach—we inspire.
                   Our mission is simple: to guide students with the right knowledge, care, and confidence so they can dream bigger and achieve higher. With expert teachers, modern facilities, and a safe environment, we prepare every student for success in XI, XII, NEET, and IIT-JEE.
 
-                  Your child's future is our responsibility—and their success, our pride.
+                  Your child&apos;s future is our responsibility—and their success, our pride.
                 </p>
                 <div className="border-l-4 border-rose-400 pl-6">
                   <div className="text-xl font-bold text-gray-800 mb-2">Best Regards </div>
@@ -775,10 +763,10 @@ export default function Home() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
               <div className="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-rose-100 to-orange-100 text-rose-600 font-semibold mb-4">
-                Director's Message
+                Director&apos;s Message
               </div>
               <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-800 to-rose-600 bg-clip-text text-transparent">
-                From Our Director's Message
+                From Our Director&apos;s Message
               </h2>
             </div>
 
@@ -787,12 +775,12 @@ export default function Home() {
               <div className="lg:col-span-2">
                 <div className="relative group">
                   <div className="w-full h-96 bg-gradient-to-br from-rose-400 to-orange-500 rounded-3xl flex items-center justify-center text-white text-4xl font-bold shadow-2xl group-hover:scale-105 transition-transform duration-500">
-                    Director's
+                    Director&apos;s
                   </div>
 
                   {/* Floating Quote Icon */}
                   <div className="absolute -top-4 -right-4 w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl animate-bounce">
-                    <span className="text-2xl text-rose-500">"</span>
+                    <span className="text-2xl text-rose-500">&quot;</span>
                   </div>
 
                   {/* Decorative Elements */}
@@ -805,19 +793,19 @@ export default function Home() {
                 <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-gray-200 hover:shadow-2xl transition-shadow duration-300">
 
                   <p className="text-xl text-gray-700 leading-relaxed mb-8 italic text-justify">
-                    "Welcome to <span className="font-bold">NORTHGATE INSTITUTION</span>. Our
+                    &quot;Welcome to <span className="font-bold">NORTHGATE INSTITUTION</span>. Our
                     INSTITUTION is to nurture young minds with a blend of modern education, moral
                     values, and creativity, helping them build a bright and purposeful future.
                     <br />
                     We believe every child is gifted with unique potential, and with proper guidance,
                     they will grow into confident, responsible, and proud citizens of tomorrow.
                     <br />
-                    <span className="font-bold">Your trust and support are our greatest strength.</span>"
+                    <span className="font-bold">Your trust and support are our greatest strength.</span>&quot;
                   </p>
 
                   <div className="border-l-4 border-rose-400 pl-6">
                     <div className="text-xl font-bold text-gray-800 mb-2">Best Regards </div>
-                    <div className="text-rose-600 font-semibold mb-2">Director's</div>
+                    <div className="text-rose-600 font-semibold mb-2">Director&apos;s</div>
                     <div className="text-gray-600 text-sm"> Md Rahamat Alam</div>
                   </div>
 
@@ -881,74 +869,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* News & Events Section */}
-      <section className="py-20 bg-primary relative overflow-hidden">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <div className="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-violet-100 to-purple-100 text-violet-600 font-semibold mb-4">
-              Latest Updates
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-800 to-violet-600 bg-clip-text text-transparent">
-              News & Events
-            </h2>
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Annual Science Fair 2025",
-                date: "March 15, 2025",
-                category: "Event",
-                excerpt: "Students showcase innovative projects and experiments in our biggest science celebration of the year."
-              },
-              {
-                title: "New Computer Lab Inauguration",
-                date: "February 28, 2025",
-                category: "News",
-                excerpt: "State-of-the-art computer laboratory with latest technology to enhance digital learning experience."
-              },
-              {
-                title: "International School Partnership",
-                date: "February 20, 2025",
-                category: "News",
-                excerpt: "Proud to announce our collaboration with schools in 5 countries for student exchange programs."
-              }
-            ].map((item, index) => (
-              <div
-                key={item.title}
-                className="group bg-white/90 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 backdrop-blur-sm"
-                style={{ animationDelay: `${index * 200}ms` }}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${item.category === 'Event'
-                    ? 'bg-orange-100 text-orange-600'
-                    : 'bg-violet-100 text-violet-600'
-                    }`}>
-                    {item.category}
-                  </span>
-                  <span className="text-gray-500 text-sm">{item.date}</span>
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4 group-hover:text-violet-600 transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">{item.excerpt}</p>
-                <Link href="/news" className="group inline-flex items-center text-violet-600 hover:text-violet-700 font-semibold">
-                  <span>Read More</span>
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Link href="/news" className="group bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white px-8 py-4 rounded-full font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl inline-flex items-center space-x-2">
-              <span>View All News & Events</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Features Section */}
       <section className="py-20 bg-primary relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
@@ -1002,8 +922,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-
     </Layout>
   )
 }

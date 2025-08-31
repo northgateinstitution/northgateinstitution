@@ -96,7 +96,7 @@ export default function VisionMission() {
                                         ❝
                                     </div>
                                     <p className="text-white text-xl leading-relaxed mb-6">
-                                        At Northgate Institution, we don't just teach—we inspire.
+                                        At Northgate Institution, we don&apos;t just teach—we inspire.
                                         Our mission is simple: to guide students with the right knowledge, care, and confidence so they can dream bigger and achieve higher.
                                          With expert teachers, modern facilities, and a safe environment, we prepare every student for success in XI, XII, NEET, and IIT-JEE.
                                     
@@ -104,7 +104,7 @@ export default function VisionMission() {
                                    
 
                                     <div className="border-l-4 border-blue-300 pl-4 italic text-white text-xl">
-                                        Your child's future is our responsibility—and their success, our pride.
+                                        Your child&apos;s future is our responsibility—and their success, our pride.
                                     </div>
 
                                     <div className="mt-12 text-right">

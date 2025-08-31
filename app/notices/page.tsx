@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Notice } from '@/types'
 import Layout from '@/components/Layout'
 
@@ -11,14 +11,10 @@ export default function NoticesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalCount, setTotalCount] = useState(0)
-  const [expandedNotices, setExpandedNotices] = useState<Set<number>>(new Set())
+  const [expandedNotices, setExpandedNotices] = useState<Set<string>>(new Set())
   const itemsPerPage = 10
 
-  useEffect(() => {
-    fetchNotices()
-  }, [currentPage])
-
-  const fetchNotices = async () => {
+  const fetchNotices = useCallback(async () => {
     try {
       setLoading(true)
       const offset = (currentPage - 1) * itemsPerPage
@@ -52,9 +48,13 @@ export default function NoticesPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [currentPage])
 
-  const toggleExpand = (id: number) => {
+  useEffect(() => {
+    fetchNotices()
+  }, [fetchNotices])
+
+  const toggleExpand = (id: string) => {
     const newExpanded = new Set(expandedNotices)
     if (newExpanded.has(id)) {
       newExpanded.delete(id)
@@ -234,6 +234,10 @@ export default function NoticesPage() {
                                   <span className="text-3xl animate-bounce">{getFileIcon(notice.file_type)}</span>
                                   <div>
                                     <p className="font-bold text-blue-900 text-lg">📎 Attachment</p>
+                                    <p className="text-sm text-gray-600">{notice.file_name}</p>
+                                    {notice.file_size && (
+                                      <p className="text-xs text-gray-500">{formatFileSize(notice.file_size)}</p>
+                                    )}
                                   </div>
                                 </div>
                                 <button

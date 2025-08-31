@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Category, Question, QuizAttempt } from '../../types'
 import { supabase } from '../../lib/supabase'
 import { AddQuestionModal } from '../../components/AddQuestionModal'
 import { AddCategoryModal } from '../../components/AddCategoryModal'
 import {
   BookOpen,
-  FileText,
   TrendingUp,
   LayoutDashboard,
   ClipboardList,
@@ -17,10 +16,15 @@ import {
   Trash2,
 } from 'lucide-react'
 
+// Update the Question type to include categories
+interface QuestionWithCategory extends Question {
+  categories?: Category
+}
+
 export default function AdminDashboard() {
   const [categories, setCategories] = useState<Category[]>([])
   const [activeTab, setActiveTab] = useState<'dashboard' | 'questions' | 'categories' | 'results' | 'notices'>('dashboard')
-  const [questions, setQuestions] = useState<Question[]>([])
+  const [questions, setQuestions] = useState<QuestionWithCategory[]>([])
   const [attempts, setAttempts] = useState<QuizAttempt[]>([])
   const [showAddQuestion, setShowAddQuestion] = useState(false)
   const [showAddCategory, setShowAddCategory] = useState(false)
@@ -29,24 +33,31 @@ export default function AdminDashboard() {
     questionsCount: 0,
     studentsCount: 0,
     noticesCount: 0,
-    recentActivities: [],
+    recentActivities: [] as (QuizAttempt & { categories?: { name: string } })[],
   })
 
-  useEffect(() => {
-    fetchCategories()
-    fetchDashboardData()
-  }, [])
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     const { data } = await supabase.from('categories').select('*').order('name')
     setCategories(data || [])
-  }
+  }, [])
 
-  const fetchDashboardData = async () => {
-    await Promise.all([fetchQuestions(), fetchAttempts(), fetchStats()])
-  }
+  const fetchQuestions = useCallback(async () => {
+    const { data } = await supabase
+      .from('questions')
+      .select(`*, categories ( name, type )`)
+      .order('created_at', { ascending: false })
+    setQuestions(data || [])
+  }, [])
 
-  const fetchStats = async () => {
+  const fetchAttempts = useCallback(async () => {
+    const { data } = await supabase
+      .from('quiz_attempts')
+      .select(`*, categories ( name, type )`)
+      .order('score', { ascending: false })
+    setAttempts(data || [])
+  }, [])
+
+  const fetchStats = useCallback(async () => {
     const { count: questionsCount } = await supabase
       .from('questions')
       .select('*', { count: 'exact', head: true })
@@ -70,25 +81,18 @@ export default function AdminDashboard() {
       questionsCount: questionsCount || 0,
       studentsCount: studentsCount || 0,
       noticesCount: noticesCount || 0,
-      recentActivities: recentActivities || [],
+      recentActivities: (recentActivities as (QuizAttempt & { categories?: { name: string } })[]) || [],
     })
-  }
+  }, [])
 
-  const fetchQuestions = async () => {
-    const { data } = await supabase
-      .from('questions')
-      .select(`*, categories ( name, type )`)
-      .order('created_at', { ascending: false })
-    setQuestions(data || [])
-  }
+  const fetchDashboardData = useCallback(async () => {
+    await Promise.all([fetchQuestions(), fetchAttempts(), fetchStats()])
+  }, [fetchQuestions, fetchAttempts, fetchStats])
 
-  const fetchAttempts = async () => {
-    const { data } = await supabase
-      .from('quiz_attempts')
-      .select(`*, categories ( name, type )`)
-      .order('score', { ascending: false })
-    setAttempts(data || [])
-  }
+  useEffect(() => {
+    fetchCategories()
+    fetchDashboardData()
+  }, [fetchCategories, fetchDashboardData])
 
   // NEW: delete a category with confirmation
   const handleDeleteCategory = async (id: string, name: string) => {
@@ -100,8 +104,9 @@ export default function AdminDashboard() {
       if (error) throw error
       await fetchCategories()
       await fetchStats()
-    } catch (err: any) {
-      alert(err?.message || 'Failed to delete category')
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete category'
+      alert(errorMessage)
     } finally {
       setDeletingId(null)
     }
@@ -123,8 +128,9 @@ export default function AdminDashboard() {
       if (error) throw error;
       await fetchAttempts();   // refresh table
       await fetchStats();      // optional: refresh dashboard stats
-    } catch (err: any) {
-      alert(err?.message || 'Failed to delete attempt');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete attempt'
+      alert(errorMessage)
     } finally {
       setDeletingId(null);
     }
@@ -150,7 +156,7 @@ export default function AdminDashboard() {
           ].map((item) => (
             <button
               key={item.key}
-              onClick={() => setActiveTab(item.key as any)}
+              onClick={() => setActiveTab(item.key as 'dashboard' | 'questions' | 'categories' | 'results' | 'notices')}
               className={`flex items-center w-full px-4 py-2 rounded-lg font-medium transition-all ${activeTab === item.key
                 ? 'bg-indigo-600 text-white shadow-md'
                 : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-100'
@@ -194,7 +200,7 @@ export default function AdminDashboard() {
               <h3 className="text-lg font-semibold mb-4">Recent Activities</h3>
               {stats.recentActivities.length > 0 ? (
                 <div className="space-y-3">
-                  {stats.recentActivities.map((activity: any) => (
+                  {stats.recentActivities.map((activity) => (
                     <div
                       key={activity.id}
                       className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg"
@@ -291,7 +297,7 @@ export default function AdminDashboard() {
                   >
                     <span className="text-blue-900 font-medium">{cat.name}</span>
                     <button
-                      onClick={() => handleDeleteCategory(cat.id as unknown as string, cat.name)}
+                      onClick={() => handleDeleteCategory(cat.id as string, cat.name)}
                       disabled={deletingId === cat.id}
                       className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border text-sm font-medium transition ${deletingId === cat.id
                         ? 'opacity-60 cursor-not-allowed border-red-200 text-red-400'
@@ -314,7 +320,7 @@ export default function AdminDashboard() {
                   >
                     <span className="text-purple-900 font-medium">{cat.name}</span>
                     <button
-                      onClick={() => handleDeleteCategory(cat.id as unknown as string, cat.name)}
+                      onClick={() => handleDeleteCategory(cat.id as string, cat.name)}
                       disabled={deletingId === cat.id}
                       className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border text-sm font-medium transition ${deletingId === cat.id
                         ? 'opacity-60 cursor-not-allowed border-red-200 text-red-400'
@@ -383,7 +389,7 @@ export default function AdminDashboard() {
                       </td>
                       <td className="py-3 px-4">
                         <button
-                          onClick={() => handleDeleteAttempt(a.id as unknown as string)}
+                          onClick={() => handleDeleteAttempt(a.id as string)}
                           disabled={deletingId === a.id}
                           className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border text-sm font-medium transition ${deletingId === a.id
                               ? 'opacity-60 cursor-not-allowed border-red-200 text-red-400'

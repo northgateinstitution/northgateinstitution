@@ -1,10 +1,9 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube, ChevronUp, School, Globe, Heart, Users, Star, Zap, Calendar, Clock } from 'lucide-react'
+import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube, ChevronUp, School, Globe, Heart, Users, Star, Zap, Calendar } from 'lucide-react'
 
 const Footer = () => {
   const [isVisible, setIsVisible] = useState(false)
-  const [currentYear] = useState(new Date().getFullYear())
 
   useEffect(() => {
     const toggleVisibility = () => {

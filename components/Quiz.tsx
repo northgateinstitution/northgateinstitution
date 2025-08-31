@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Question } from '@/types'
 import QuizResult from './QuizResult'
 import { Clock, ArrowLeft, ArrowRight, Flag, AlertCircle } from 'lucide-react'
@@ -26,27 +26,7 @@ export default function Quiz({ studentName, studentEmail, studentMobile, categor
   const [loading, setLoading] = useState(true)
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false)
 
-  useEffect(() => {
-    fetchQuestions()
-  }, [])
-
-  useEffect(() => {
-    if (timeLeft <= 0) return
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          handleSubmitQuiz()
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [timeLeft])
-
-  const fetchQuestions = async () => {
+  const fetchQuestions = useCallback(async () => {
     try {
       const response = await fetch(`/api/questions?categoryId=${categoryId}&quizType=${quizType}`)
       if (response.ok) {
@@ -58,32 +38,9 @@ export default function Quiz({ studentName, studentEmail, studentMobile, categor
     } finally {
       setLoading(false)
     }
-  }
+  }, [categoryId, quizType])
 
-  const handleAnswerSelect = (answer: string) => {
-    setSelectedAnswers({
-      ...selectedAnswers,
-      [questions[currentQuestionIndex].id]: answer
-    })
-  }
-
-  const handleNext = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1)
-    }
-  }
-
-  const handlePrevious = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1)
-    }
-  }
-
-  const handleQuestionNavigation = (index: number) => {
-    setCurrentQuestionIndex(index)
-  }
-
-  const handleSubmitQuiz = async () => {
+  const handleSubmitQuiz = useCallback(async () => {
     const timeTaken = Math.floor((Date.now() - startTime) / 1000)
     let correctCount = 0
 
@@ -131,6 +88,49 @@ export default function Quiz({ studentName, studentEmail, studentMobile, categor
     } catch (error) {
       console.error('Error saving quiz attempt:', error)
     }
+  }, [questions, selectedAnswers, startTime, studentName, studentEmail, studentMobile, categoryId, quizType, onComplete])
+
+  useEffect(() => {
+    fetchQuestions()
+  }, [fetchQuestions])
+
+  useEffect(() => {
+    if (timeLeft <= 0) return
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          handleSubmitQuiz()
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [timeLeft, handleSubmitQuiz])
+
+  const handleAnswerSelect = (answer: string) => {
+    setSelectedAnswers({
+      ...selectedAnswers,
+      [questions[currentQuestionIndex].id]: answer
+    })
+  }
+
+  const handleNext = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1)
+    }
+  }
+
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1)
+    }
+  }
+
+  const handleQuestionNavigation = (index: number) => {
+    setCurrentQuestionIndex(index)
   }
 
   const formatTime = (seconds: number) => {

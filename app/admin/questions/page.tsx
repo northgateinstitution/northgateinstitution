@@ -1,33 +1,29 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Question, Category } from '@/types'
 import { supabase } from '@/lib/supabase'
 import { AddQuestionModal } from '@/components/AddQuestionModal'
 import { BookOpen, Plus, Edit, Trash2, Search, Filter } from 'lucide-react'
 import Navbar from '@/components/Navbar'
 
+// Create a new type that includes the joined category data
+interface QuestionWithCategory extends Question {
+  categories?: Category
+}
+
 export default function AdminQuestions() {
-  const [questions, setQuestions] = useState<Question[]>([])
+  const [questions, setQuestions] = useState<QuestionWithCategory[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [showAddModal, setShowAddModal] = useState(false)
-  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null)
+  const [editingQuestion, setEditingQuestion] = useState<QuestionWithCategory | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedDifficulty, setSelectedDifficulty] = useState('')
   const [loading, setLoading] = useState(true)
   const [serialNumbers, setSerialNumbers] = useState<Record<string, number>>({})
 
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  const fetchData = async () => {
-    await Promise.all([fetchQuestions(), fetchCategories()])
-    setLoading(false)
-  }
-
-  const fetchQuestions = async () => {
+  const fetchQuestions = useCallback(async () => {
     const { data } = await supabase
       .from('questions')
       .select(`
@@ -40,16 +36,25 @@ export default function AdminQuestions() {
       .order('created_at', { ascending: false })
     
     setQuestions(data || [])
-  }
+  }, [])
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     const { data } = await supabase
       .from('categories')
       .select('*')
       .order('name')
     
     setCategories(data || [])
-  }
+  }, [])
+
+  const fetchData = useCallback(async () => {
+    await Promise.all([fetchQuestions(), fetchCategories()])
+    setLoading(false)
+  }, [fetchQuestions, fetchCategories])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
 
   // Calculate serial numbers by category
   useEffect(() => {
@@ -110,11 +115,14 @@ export default function AdminQuestions() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      
+      <Navbar userRole="admin" />
       
       <div className="container mx-auto px-4 py-8">
-       
-        
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Question Bank</h1>
+          <p className="text-gray-600">Manage all questions and their categories</p>
+        </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -171,7 +179,7 @@ export default function AdminQuestions() {
         </div>
 
         <div className="flex justify-between items-center mb-8">
-         
+          <h2 className="text-xl font-semibold text-gray-800">All Questions</h2>
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center space-x-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold shadow-lg hover:shadow-xl transition-all"
