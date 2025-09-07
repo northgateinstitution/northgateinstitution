@@ -253,19 +253,15 @@ const HomeNoticesQuizSection = () => {
 };
 
 export default function Home() {
-  const [showWelcomePopup, setShowWelcomePopup] = useState(true);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
 
   useEffect(() => {
-    // Check if popup was previously closed
-    const popupClosed = localStorage.getItem('popupClosed');
-    if (popupClosed === 'true') {
-      setShowWelcomePopup(false);
-    }
+    // Always show the popup when the home page loads
+    setShowWelcomePopup(true);
   }, []);
 
   const handleClosePopup = () => {
     setShowWelcomePopup(false);
-    localStorage.setItem('popupClosed', 'true');
   };
 
   const features = [
