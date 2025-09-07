@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Layout from '@/components/Layout'
 import Link from 'next/link'
 import Image from 'next/image'
-import { BookOpen, Users, Trophy, Calendar, Star, ArrowRight, Globe, X, Bell, Award, GraduationCap, Clock, BookText, MapPin, Phone, Mail, History, Target, UserCheck, Medal, MessageCircle, Eye, TargetIcon } from 'lucide-react'
+import { BookOpen, Users, Trophy, Calendar, ArrowRight, X, Bell, Award, GraduationCap, Phone, UserCheck, Eye, TargetIcon } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, EffectFade, Pagination } from 'swiper/modules'
 import 'swiper/css'
@@ -68,13 +68,6 @@ const HomeNoticesQuizSection = () => {
     setExpandedNotices(newExpanded);
   };
 
-  const isNewNotice = (dateString: string) => {
-    const noticeDate = new Date(dateString);
-    const tenDaysAgo = new Date();
-    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-    return noticeDate > tenDaysAgo;
-  };
-
   const getFileIcon = (fileType?: string) => {
     if (!fileType) return '📎';
 
@@ -118,7 +111,7 @@ const HomeNoticesQuizSection = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {notices.slice(0, 3).map((notice, index) => (
+                  {notices.slice(0, 3).map((notice) => (
                     <article
                       key={notice.id}
                       className="bg-gray-50 rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow"
@@ -570,12 +563,12 @@ export default function Home() {
                 </div>
                 <div className="p-6">
                   <p className="text-gray-700 mb-4">
-                    At Northgate Institution, we don't just teach—we inspire. Our mission is simple: to guide
+                    At Northgate Institution, we don&apos;t just teach—we inspire. Our mission is simple: to guide
                     students with the right knowledge, care, and confidence so they can dream bigger and achieve higher.
                   </p>
                   <p className="text-gray-700 mb-6">
                     With expert teachers, modern facilities, and a safe environment, we prepare every student
-                    for success in XI, XII, NEET, and IIT-JEE. Your child's future is our responsibility—and
+                    for success in XI, XII, NEET, and IIT-JEE. Your child&apos;s future is our responsibility—and
                     their success, our pride.
                   </p>
                   <Link href="/about/vision" className="inline-flex items-center text-green-700 font-semibold hover:text-green-800">
@@ -592,12 +585,12 @@ export default function Home() {
               <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
                 <div className="bg-amber-700 p-4 flex items-center">
                   <UserCheck className="text-white mr-2" size={20} />
-                  <h3 className="text-white font-semibold">Director's Message</h3>
+                  <h3 className="text-white font-semibold">Director&apos;s Message</h3>
                 </div>
                 <div className="p-6">
                   <p className="text-gray-700 mb-4 italic">
-                    "Welcome to NORTHGATE INSTITUTION. Our institution is to nurture young minds with a blend
-                    of modern education, moral values, and creativity, helping them build a bright and purposeful future."
+                    &quot;Welcome to NORTHGATE INSTITUTION. Our institution is to nurture young minds with a blend
+                    of modern education, moral values, and creativity, helping them build a bright and purposeful future.&quot;
                   </p>
                   <p className="text-gray-700 mb-6">
                     <span className="font-semibold">Md Rahamat Alam</span>
@@ -648,8 +641,8 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {academicPrograms.map((program, index) => (
-              <div key={index} className="bg-white rounded-lg p-6 shadow-md border border-gray-200 hover:shadow-lg transition-shadow text-center">
+            {academicPrograms.map((program) => (
+              <div key={program.title} className="bg-white rounded-lg p-6 shadow-md border border-gray-200 hover:shadow-lg transition-shadow text-center">
                 <div className="text-4xl mb-4">{program.icon}</div>
                 <h3 className="font-semibold text-gray-800 mb-2">{program.title}</h3>
                 <p className="text-gray-600 text-sm">{program.description}</p>
@@ -674,7 +667,7 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
+            {features.map((feature) => (
               <div
                 key={feature.title}
                 className="bg-white rounded-lg p-6 text-center border border-gray-200 hover:shadow-md transition-shadow"
