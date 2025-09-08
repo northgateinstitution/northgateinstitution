@@ -241,9 +241,21 @@ const HomeNoticesQuizSection = () => {
               </a>
 
               {/* Additional Info */}
-              <div className="mt-4 text-sm text-gray-500">
-                <p>Instant results • Various categories • Track your progress</p>
+              <div className="mt-6 text-base md:text-lg text-gray-600 font-medium">
+                <p className="flex items-center justify-center gap-6 flex-wrap">
+                  <span className="inline-flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-full">
+                    <span className="text-green-500 text-lg">⚡</span>
+                    Instant results
+                  </span>
+                  
+                  <span className="inline-flex items-center gap-2 bg-purple-50 px-3 py-1.5 rounded-full">
+                    <span className="text-purple-500 text-lg">📊</span>
+                    Track your progress
+                  </span>
+                </p>
               </div>
+
+
             </div>
           </div>
         </div>
